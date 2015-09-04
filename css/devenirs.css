@@ -1,0 +1,38 @@
+/********************************************/
+/* Style des pages du module devenirs
+/********************************************/
+
+
+/********************************************/
+/* Couleurs 
+/********************************************/
+
+body {
+	background-color: #E0F2F1; /* 50 */
+}
+.menu_horizontal {
+	background-color: #004D40; /* 900 */
+}
+
+nav #home {
+
+}
+
+nav .menu_elt:hover,
+nav .menu_elt:hover a,
+nav #home:hover {
+	background-color: #A7FFEB; /* A100 */
+}
+
+.menu_vertical,
+header {
+	background-color: #009688; /* 500 */
+}
+
+header {
+	border-bottom: none;
+}
+
+footer {
+	background-color: #00796B; /* 700 */
+}

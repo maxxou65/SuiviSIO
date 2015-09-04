@@ -1,0 +1,84 @@
+<?php
+
+// ================================
+// 	Création de la session
+// 	Redirection des utilisateurs non identifié
+// ================================
+
+
+include_once('../struct/session.php');
+//include('../connexion/session.php');
+$_SESSION['MOD'] = "_"."stages"; // définition du module
+$mod = $_SESSION['MOD'];
+
+// ================================
+// 	
+// ================================
+
+function afficher_entreprise($connexion) { // $classe = 'SIO1' || $classe = 'SIO2'
+	$sql = "SELECT `NOM_ENTREPRISE`, `TYPE_ENTREPRISE`, `ADRESSE_ENTREPRISE`, `CPOSTAL_ENTREPRISE`, `VILLE_ENTREPRISE`, `TEL_ENTREPRISE`, `EMAIL_ENTREPRISE`, `ID_TUTEUR` FROM `ENTREPRISE`;";
+	$res_sio = $connexion->query($sql);  
+	$table = $res_sio->fetchAll(PDO::FETCH_ASSOC);
+	$table_entreprise = '<table class="def sup">'
+					  . '<thead>'.'<tr>'
+					  . '<th>'."NOM".'</th><th>'."TYPE".'</th><th>'."ADRESSE".'</th>'
+					  . '</tr>'.'</thead>'
+					  . '<tbody>';
+
+	foreach ($table as $table_row) {
+
+		$nom_entreprise = $table_row['NOM_ENTREPRISE'];
+		$type_entreprise = $table_row['TYPE_ENTREPRISE'];
+		$adresse_entreprise = $table_row['ADRESSE_ENTREPRISE'];
+
+		$table_entreprise .= '<tr>'
+						   . '<td>'.'<input type="number" name="stage'.$i.'[ID_STAGE]" value="'.$id_stage.'" readonly>'.'</td>'
+					  	   . '<td>'.'<input type="checkbox" name="stage'.$i.'[SUP]" value="'.$id_stage.'">'.'</td>'
+						   . '<td>'.$nom_entreprise.'</td>'
+						   . '<td>'.$type_entreprise.'</td>'
+						   . '<td>'.$adresse_entreprise.'</td>'
+						   . '</tr>';
+	}
+
+	$table_entreprise .= '</tbody>'.'</table>'.'</div>';
+	return $table_entreprise;
+}
+
+$tab = afficher_entreprise($connexion);
+
+// ================================
+// 	DOCUMENT HTML
+// ================================
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<?php
+
+	// ================================
+	// 	paramètres du <head>
+	// 	commun aux pages (inclusion de fichiers CSS, JS; balise meta; ...) 
+	// ================================
+
+	include("../struct/param_head.php");
+	echo '<title>'."Module de gestion des stages et des entreprises".$title.'</title>';
+
+	?>
+	<link rel="stylesheet" type="text/css" href="../css/stage.css">
+</head>
+<body><!--	entête (header)
+--><?php include("../struct/entete".$mod.".php"); ?><!--	menu horizontal
+--><?php include("../struct/menu_horizontal.php"); ?><!--	menu vertical
+--><?php include("../struct/menu_vertical".$mod.".php"); ?><!--
+	contenu de la page
+	appliquez un ID sur votre section pour y appliquer un style particulier en CSS
+--><section id="" class="document">
+		<div class="placer">
+
+		</div>
+</section><!--
+	Pied de page (footer)
+--><?php include("../struct/pieddepage.php"); ?>
+</body>
+</html>

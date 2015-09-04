@@ -1,0 +1,212 @@
+<?php
+
+// ================================
+// 	Création de la session
+// 	Redirection des utilisateurs non identifié
+// ================================
+
+include_once('../connexion/session.php');
+$_SESSION['MOD'] = "_"."stages"; // définition du module
+$mod = $_SESSION['MOD'];
+
+// ================================
+// Récupération du choix
+// ================================
+
+// $sql = "SELECT `ID_ETU`, `NOM_ETU`, `PRENOM_ETU`, `CODE_CLASSE` FROM `ETUDIANT` ORDER BY `CODE_CLASSE`, `NOM_ETU` ASC;";
+// $res = $connexion->query($sql);  
+// $info_fiche = $res->fetchAll(PDO::FETCH_ASSOC);
+
+$sql = "SELECT `stage`.`ID_ETU`, `NOM_ETU`, `PRENOM_ETU`, `CODE_CLASSE` FROM `stage` INNER JOIN `etudiant` ON `stage`.`ID_ETU` = `etudiant`.`ID_ETU` ORDER BY `CODE_CLASSE`, `NOM_ETU` ASC;";
+$res = $connexion->query($sql);  
+$info_fiche = $res->fetchAll(PDO::FETCH_ASSOC);
+
+
+if(isset($_GET['choix'])) {
+	$id_etu_selected = $_GET['choix'];
+
+	// ================================
+	// Récupération des infos pour la fiche
+	// ================================
+
+	$sql = "SELECT 	ID_STAGE, CLASSE_STAGE, stage.ID_PERIODE, periode.ID_DPERIODE, CONCAT('du ', DATE_DEBUT, ' au ', DATE_FIN) AS `DATES`,
+					entreprise.ID_TUTEUR, CONCAT(UPPER(NOM_TUTEUR), ' ', PRENOM_TUTEUR) AS NOM_TUTEUR, SERVICE_TUTEUR, STATUT_TUTEUR, TEL_TUTEUR, MAIL_TUTEUR,
+					stage.ID_PROF, prof_tuteur.MAT_PROF AS MAT_PROF_TUTEUR, CONCAT(UPPER(prof_tuteur.NOM_PROF), ' ', prof_tuteur.PRENOM_PROF) AS NOM_PROF_TUTEUR,
+					stage.ID_PROF_VISITER, prof_visiteur.MAT_PROF AS MAT_PROF_VISITEUR, CONCAT(UPPER(prof_visiteur.NOM_PROF), ' ', prof_visiteur.PRENOM_PROF) AS NOM_PROF_VISITEUR,
+					stage.ID_ETU, CONCAT(UPPER(NOM_ETU), ' ', PRENOM_ETU) AS NOM_ETU, CODE_CLASSE, CODE_SPECIALITE,
+					stage.ID_ENTREPRISE, NOM_ENTREPRISE, TYPE_ENTREPRISE, ADRESSE_ENTREPRISE, CPOSTAL_ENTREPRISE, VILLE_ENTREPRISE
+					FROM stage
+					INNER JOIN entreprise ON stage.ID_ENTREPRISE = entreprise.ID_ENTREPRISE
+					INNER JOIN tuteur ON entreprise.ID_TUTEUR = tuteur.ID_TUTEUR
+					INNER JOIN professeur AS PROF_TUTEUR ON stage.ID_PROF = prof_tuteur.ID_PROF
+					INNER JOIN professeur AS PROF_VISITEUR ON stage.ID_PROF_VISITER = prof_visiteur.ID_PROF
+					INNER JOIN etudiant ON stage.ID_ETU = etudiant.ID_ETU
+					INNER JOIN periode ON stage.ID_PERIODE = periode.ID_DPERIODE
+					INNER JOIN dperiode ON periode.ID_DPERIODE = dperiode.ID_DPERIODE
+					WHERE stage.ID_ETU = '$id_etu_selected';";
+	$res = $connexion->query($sql);  
+	$info_stage = $res->fetch(PDO::FETCH_ASSOC);
+
+	if ($info_stage == "") {
+
+		$message = '<li>'."Désolé, mais d'après la base de données il semble que cet étudiant n'a pas fait encore de stage..".'</li>';
+
+	} else {
+
+		// Stage
+		// ----------------
+		$dates =  $info_stage['DATES'];
+		$classe_stage =  $info_stage['CLASSE_STAGE'];
+
+		// Tuteurs
+		// ----------------
+		$id_tuteur = $info_stage['ID_TUTEUR'];
+		$nom_tuteur = $info_stage['NOM_TUTEUR'];
+		$service_tuteur = $info_stage['SERVICE_TUTEUR'];
+		$statut_tuteur = $info_stage['STATUT_TUTEUR'];
+		$tel_tuteur = $info_stage['TEL_TUTEUR'];
+		$mail_tuteur = $info_stage['MAIL_TUTEUR'];
+
+
+		// Etudiant
+		// ----------------
+		$id_etu = $info_stage['ID_ETU']; 
+		$nom_etu = $info_stage['NOM_ETU']; 
+		$code_classe = $info_stage['CODE_CLASSE'];
+		$code_specialite = $info_stage['CODE_SPECIALITE'];
+
+
+		// Entreprise
+		// ----------------
+		$id_entreprise = $info_stage['ID_ENTREPRISE']; 
+		$nom_entreprise = $info_stage['NOM_ENTREPRISE']; 
+		$type_entreprise = $info_stage['TYPE_ENTREPRISE']; 
+		$adresse_entreprise = $info_stage['ADRESSE_ENTREPRISE']; 
+		$cpostal_entreprise = $info_stage['CPOSTAL_ENTREPRISE']; 
+		$ville_entreprise = $info_stage['VILLE_ENTREPRISE'];
+
+		// Professeur tuteur
+		// ----------------
+		$mat_prof_tuteur = $info_stage['MAT_PROF_TUTEUR'];
+		$nom_prof_tuteur = $info_stage['NOM_PROF_TUTEUR'];
+
+		// Professeur visiteur
+		// ----------------
+		$mat_prof_visiteur = $info_stage['MAT_PROF_VISITEUR'];
+		$nom_prof_visiteur = $info_stage['NOM_PROF_VISITEUR'];
+
+		$fiche_test = '<div>'
+		. '<table class="fiche">'
+		. '<thead>'.'<tr>'
+		. '<th colspan="4">'."Stage de ".$classe_stage.'</th>'
+		. '</tr>'.'<tr>'
+		. '<th colspan="4">Effectué '.$dates.'</th>'
+		. '</tr>'.'</thead>'.'<thead>'.'<tr>'
+		. '<th colspan="4">'."Stagiaire".'</th>'
+		. '</tr>'
+		. '</thead>'
+		. '<tbody>'.'<tr>'
+		. '<th>'."Nom".'</th><td colspan="3">'.$nom_etu.'</td>'
+		. '</tr>'.'<tr>'
+		. '<th>'."Parcours".'</th>'.'<td>'.$code_specialite.'</td>'.'<th>'."Classe".'</th><td>'.$code_classe.'</td>'
+		. '</tr>'.'</tbody>'.'<thead>'
+		. '<tr>'.'<th colspan="4">'."Entreprise".'</th>'
+		. '</tr>'.'</thead>'
+		. '<tbody>'.'<tr>'
+		. '<th>'."Nom".'</th><td colspan="3">'.$nom_entreprise.'</td>'
+		. '</tr>'.'<tr>'
+		. '<th>'."Type".'</th><td colspan="3">'.$type_entreprise.'</td>'
+		. '</tr><tr>'
+		. '<th>'."Ville".'</th><td>'.$ville_entreprise.'</td><th>'."Code Postal".'</th><td>'.$cpostal_entreprise.'</td>'
+		. '</tr>'.'<tr>'
+		. '<th>'."Adresse".'</th><td colspan="3">'.$adresse_entreprise.'</td>'
+		. '</tr>'.'</tbody>'.'<thead>'.'<tr>'
+		. '<th colspan="4">'."Tuteur".'</th>'
+		. '</tr>'.'</thead>'.'<tbody>'.'<tr>'
+		. '<th>Nom</th><td colspan="3">'.$nom_tuteur.'</td>'
+		. '</tr>'.'<tr>'
+		. '<th>Service</th><td>'.$service_tuteur.'</td><th>Statut</th><td>'.$statut_tuteur.'</td>'
+		. '</tr>'.'<tr>'
+		. '<th>Mail</th><td>'.$mail_tuteur.'</td><th>Telephone</th><td>'.$tel_tuteur.'</td>'
+		. '</tr>'.'</tbody>'.'<thead>'.'<tr>'
+		. '<th colspan="2">Professeur superviseur</th><th colspan="2">Professeur visiteur</th>'
+		. '</tr>'.'</thead>'.'<tbody>'.'<tr>'
+		. '<th>'."Nom".'</th><td>'.$nom_prof_tuteur.'</td><th>'."Nom".'</th><td>'.$nom_prof_tuteur.'</td>'
+		. '</tr>'.'<tr>'
+		. '<th>'."Matricule".'</th><td>'.$mat_prof_tuteur.'</td><th>'."Matricule".'</th><td>'.$mat_prof_tuteur.'</td>'
+		. '</tr>'.'</tbody>'.'</table>'.'</div>';
+
+	}
+} else {
+	$id_etu_selected = "";
+}
+
+
+$opt_group = $info_fiche[0]['CODE_CLASSE'];
+$choix_fiche = '<select name="choix">'."\n"
+			 . '<optgroup label="'.$opt_group.'">'."\n";
+
+foreach ($info_fiche as $row) {
+	if ($opt_group != $row['CODE_CLASSE']) {
+		$opt_group = $row['CODE_CLASSE'];
+		$choix_fiche .= '</optgroup>'.'<optgroup label="'.$opt_group.'">'."\n";
+	}
+	if ($row['ID_ETU'] == $id_etu_selected)
+		$selected = 'selected';
+	else 
+		$selected = "";
+		$choix_fiche .= '<option value="'.$row['ID_ETU'].'" '.$selected.'>'.$row['PRENOM_ETU']." ".$row['NOM_ETU'].'</option>'."\n";
+}
+$choix_fiche .= '</select>';
+
+
+// <!--
+// ================================
+// 	DOCUMENT HTML
+// ================================
+// -->
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<?php
+	// <!--
+	// ================================
+	// 	paramètres du <head>
+	// 	commun aux pages (inclusion de fichiers CSS, JS; balise meta; ...) 
+	// ================================
+	// -->
+	include("../struct/param_head.php");
+	echo '<title>'."Fiche de stage".$title.'</title>';
+	// nom de votre page
+	?>
+	<link rel="stylesheet" type="text/css" href="../css/stage.css">
+</head>
+<body><!--	entête (header)
+--><?php include("../struct/entete".$mod.".php"); ?><!--	menu horizontal
+--><?php include("../struct/menu_horizontal.php"); ?><!--	menu vertical
+--><?php include("../struct/menu_vertical".$mod.".php"); ?><!--
+	contenu de la page
+	appliquez un ID sur votre section pour y appliquer un style particulier en CSS
+--><section id="fiche_stage" class="document">
+<?php
+	// include("../struct/breadcrumb.php");
+	// breadcrumb();
+?>
+<form id="choix_classe" action="fiche_stages.php" method="get">
+	<p>Choissez la fiche de stage</p>
+	<?php echo $choix_fiche ?>
+	<input type="submit" class="submit transition" value="Valider">
+</form>
+<?php
+if (isset($fiche_test)) {
+	echo $fiche_test;
+}
+?>
+<?php include("../struct/message.php"); ?>
+</section><!--
+	Pied de page (footer)
+--><?php include("../struct/pieddepage.php"); ?>
+</body>
+</html>

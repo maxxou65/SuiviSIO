@@ -1,0 +1,54 @@
+<?php
+
+// ================================
+// 	Création de la session
+// 	Redirection des utilisateurs non identifié
+// ================================
+
+
+include_once('../struct/session.php');
+$_SESSION['MOD'] = "_"."stages"; // définition du module
+$mod = $_SESSION['MOD'];
+
+// ================================
+// 	
+// ================================
+
+
+
+// ================================
+// 	DOCUMENT HTML
+// ================================
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<?php
+
+	// ================================
+	// 	paramètres du <head>
+	// 	commun aux pages (inclusion de fichiers CSS, JS; balise meta; ...) 
+	// ================================
+
+	include("../struct/param_head.php");
+	echo '<title>'."Module de gestion des stages et des entreprises".$title.'</title>';
+
+	?>
+	<link rel="stylesheet" type="text/css" href="../css/stage.css">
+</head>
+<body><!--	entête (header)
+--><?php include("../struct/entete".$mod.".php"); ?><!--	menu horizontal
+--><?php include("../struct/menu_horizontal.php"); ?><!--	menu vertical
+--><?php include("../struct/menu_vertical".$mod.".php"); ?><!--
+	contenu de la page
+	appliquez un ID sur votre section pour y appliquer un style particulier en CSS
+--><section id="" class="document">
+		<div class="placer">
+
+		</div>
+</section><!--
+	Pied de page (footer)
+--><?php include("../struct/pieddepage.php"); ?>
+</body>
+</html>

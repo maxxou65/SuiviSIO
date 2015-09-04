@@ -1,0 +1,130 @@
+﻿	<form action="ajouter_stages.php" method="post"><!--
+		----------------------------------------
+			Champ de formulaire pour les 
+			informations concernant la date du 
+			stage, l'étudiant concerné, le ou 
+			les professeurs qui s'occupent de 
+			l'élève		
+		----------------------------------------
+	 --><div class="header">
+			<h2>Ajout d'un stage</h2>
+		</div><!--
+			Classe choisie pour aller chercher ensuite un étudiant
+	 --><div class="radio">
+			<label for="CODE_CLASSE">Classe</label>
+			<?php echo donner_radio_bouton_classe($connexion,$code_classe); ?>
+			<span class="hint"></span>
+		</div><!--
+			Etudiant à qui l'on souhaite ajouter un stage
+	 --><div>
+			<label for="ID_ETUDIANT">Etudiant</label>
+			<?php echo lister_etudiant2($connexion,$id_etudiant,$code_classe); ?>
+			<span class="hint"></span>
+		</div><!--	
+			Date du stage
+	 --><div>
+			<label for="CODE_STAGE">Date de stage</label>
+			<?php echo lister_date($connexion,$id_periode); ?>
+			<span class="hint"></span>
+		</div><!--
+			Professeur qui s'occupe du stage de l'élève
+	 --><div>
+			<label for="ID_PROF_SUPERVISER">Superviseur</label>
+			<?php echo lister_superviseur($connexion,$id_prof_superviseur); ?>
+			<span class="hint"></span>
+		</div><!--
+			Professeur qui va visiter l'étudiant pendant le stage
+	 --><div>
+			<label for="ID_PROF">Visiteur</label>
+			<?php echo lister_visiteur($connexion,$id_prof_visiteur); ?>
+			<span class="hint"></span>
+		</div><!--
+		----------------------------------------
+			Champ de formulaire à rentrer pour
+			savoir les informations concernant
+			l'entreprise où est réalisé le stage
+		----------------------------------------
+	 --><div class="header">
+			<h2>Entreprise</h2>
+		</div><!--
+			Nom de l'entreprise
+	 --><div>
+			<label for="nom">Raison sociale *</label>
+			<input name="NOM_ENTREPRISE" value="" type="text" id="nom" class="defaut" tabindex="1">
+		</div><!--
+			Descriptif rapide de l'activité de l'entreprise en quelques mots
+	 --><div>
+			<label for="type">Type *</label>
+			<input name="TYPE_ENTREPRISE" value="" type="text" id="type" class="defaut" tabindex="2">
+		</div><!--
+			Adresse de l'entreprise
+	 --><div>
+			<label for="adresse">Adresse *</label>
+			<input name="ADRESSE_ENTREPRISE" value="" type="text" id="adresse" class="defaut" tabindex="3">
+		</div><!--
+			Code postale de la ville où se situe l'entreprise
+	 --><div>
+			<label for="cpost">Code postal</label>
+			<input name="CPOSTAL_ENTREPRISE" value="" type="number" id="cpost" class="defaut" tabindex="4">
+		</div><!--
+			Ville où se situe l'entreprise (le lieu où se fait le stage)
+	 --><div>
+			<label for="adresse">Ville *</label>
+			<input name="VILLE_ENTREPRISE" value="" type="text" id="adresse" class="defaut" tabindex="5">
+		</div><!--
+			Numéro de téléphone de l'entreprise
+	 --><div>
+			<label for="tel_entreprise">Téléphone *</label>
+			<input name="TEL_ENTREPRISE" value="" type="text" id="tel_entreprise" class="defaut" tabindex="6">
+		</div><!--
+			Mail de l'entreprise
+	 --><div>
+			<label for="mail_entr">Mail</label>
+			<input name="MAIL_ENTREPRISE" value="" type="text" id="mail_entr" class="defaut" tabindex="7">
+		</div><!--
+		----------------------------------------
+			Champs du formulaire avoir des
+			informations sur le tuteur
+		----------------------------------------
+	 --><div class="header">
+			<h2>Tuteur</h2>
+		</div><!--
+			Nom du tuteur
+	 --><div>
+			<label for="nom_tuteur">Nom *</label>
+			<input name="NOM_TUTEUR" value="" type="text" id="nom_tuteur" class="defaut" tabindex="8">
+		</div><!--
+			Prénom du tuteur
+	 --><div>
+			<label for="prenom_tuteur">Prénom *</label>
+			<input name="PRENOM_TUTEUR" value="" type="text" id="prenom_tuteur" class="defaut" tabindex="9">
+		</div><!--
+			Téléphone du tuteur
+	 --><div>
+			<label for="tel_tuteur">Téléphone</label>
+			<input name="TEL_TUTEUR" value="" type="tel" id="tel_tuteur" class="defaut" tabindex="10">
+		</div><!--
+			Mail du tuteur
+	 --><div>
+			<label for="mail_tuteur">Mail *</label>
+			<input name="MAIL_TUTEUR" value="" type="email" id="mail_tuteur" class="defaut" tabindex="11">
+		</div><!--
+			Status du tuteur dans l'entreprise
+	 --><div>
+			<label for="status_tuteur">Status * </label>
+			<input name="STATUS_TUTEUR" value="" type="text" id="status_tuteur" class="defaut" tabindex="12">
+		</div><!--
+			Service où travaille le tuteur
+	 --><div>
+			<label for="service_tuteur">Service *</label>
+			<input name="SERVICE_TUTEUR" value="" type="text" id="service_tuteur" class="defaut" tabindex="13">
+		</div><!--
+		----------------------------------------
+			Bouton d'enregistrement du 
+			formulaire
+		----------------------------------------			
+	 --><div>
+	 		<input class="submit transition" type="submit" value="Soumettre">
+	 	</div><!--
+	 -->
+	</form>

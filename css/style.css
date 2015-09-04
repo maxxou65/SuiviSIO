@@ -1,0 +1,421 @@
+/********************************************/
+/* Page (global)
+/********************************************/
+
+html, body {
+	height: 100%;
+	margin: 0; padding: 0;
+}
+
+body {
+	background-color: #FAFAFA;
+	font-family: Roboto;
+	display : table;
+	width: 100%;
+}
+
+
+/********************************************/
+/* Menu horizontal
+/********************************************/
+
+nav li {
+	list-style: none;
+}
+
+nav {
+	color: #FFFFFF;
+	display: inline-block;
+}
+
+nav ul {
+	padding: 0; margin: 0;
+}
+
+.menu_horizontal ul {
+	width: calc((275px + 5px * 2 + 5px * 2) * 3);
+	margin: 0 auto;
+}
+
+.menu_horizontal {
+	background-color: #2a36b1;
+	width: 100%; height: 50px;
+	margin: 0; padding: 0px;
+	position: relative;
+	left: 0px; top: 0px;
+	box-shadow: 0px 1px 5px 0px rgba(50, 50, 50, 0.75);
+	z-index: 4px;
+}
+
+.menu_horizontal ul,
+.menu_horizontal li {
+	height: 100%;
+}
+
+.menu_horizontal li {
+	display: inline-block;
+	width: 275px;
+	vertical-align: top;
+	padding: 0 5px; margin: 0 5px;
+}
+
+.menu_horizontal li a {
+	width: 100%;
+	text-align: center;
+	margin-top: 14px;
+}
+
+.menu_horizontal li:nth-child(1):hover {	background-color: #3F51B5;	}
+.menu_horizontal li:nth-child(2):hover {	background-color: #FF5722;	}
+.menu_horizontal li:nth-child(3):hover {	background-color: #009688;	}
+
+
+/********************************************/
+/* Menu vertical
+/********************************************/
+
+.menu_vertical {
+	background-color: #5677fc;
+	max-width: 15%;
+	min-width: 200px;
+	position: relative;
+	left: 0px; top: 0px;
+}
+
+.menu_vertical li:not(.separateur) {
+	display: block;
+	padding: 5px;
+}
+
+nav li {
+	text-align: left;
+	transition: all 250ms ease;
+}
+
+.transition {
+	transition: all 250ms ease;
+}
+
+nav .menu_elt {
+	margin: 0 13px;
+}
+
+.menu_elt img {
+	visibility: hidden;
+}
+
+nav .menu_elt:hover img {
+	visibility: visible;
+}
+
+nav #home {
+	border-left: solid 2px rgba(0, 0, 0, 0);;
+	border-right: solid 2px rgba(0, 0, 0, 0);;
+}
+
+nav .menu_elt:hover,
+nav #home:hover {
+	/*background-color: #91a7ff;*/
+	border-left: solid 2px #FFFFFF;
+	border-right: solid 2px #FFFFFF;
+	/*padding-left: 15px;*/
+	color: #FFFFFF;
+	margin: 0;
+}
+
+nav a {
+	text-decoration: none;
+	color: #FFFFFF;
+	width: 100%; height: 100%;
+	display: block;
+}
+
+.separateur {
+	border-bottom: solid 1px #FFFFFF;
+	height: 0; width: 90%;
+	margin: 3px auto; padding: 0;
+}
+
+.menu_elt {
+	padding: 5px 0 5px 10px;
+}
+
+nav img {
+	margin-right: 5px;
+}
+
+.menu_header {
+	font-size: 1.2em;
+}
+
+/********************************************/
+/* En-tête et pied de page
+/********************************************/
+
+header {
+	background-color: #9E9E9E; /* 500 */
+	position: relative;
+	left: 0; top: 0;
+	width: 100%; height: 75px;
+	text-align: center;
+	padding: 5px 0; margin: 0;
+	border: none;
+	border-bottom: solid 25px #212121 ; /* 900 */
+}
+
+header .img {
+	float: left;
+	height: calc(100% - 15px); width: 325px;
+	background-image: url("../img/SuiviSIO_3.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	margin-top: 15px;
+	margin-left: 15px;
+}
+
+.titre_entete {
+	font-size: 2em;
+	color: #FFFFFF;
+	padding-right: 20px;
+}
+
+footer {
+	display : table-row;
+	height: 100px; 
+}
+
+footer {
+	background-color: #616161; /* 700 */
+	width: 100%;
+	text-align: center;
+	padding: 5px 0; margin: 5px 0 0;
+	color: #FFFFFF;
+	z-index: -1;
+}
+
+/********************************************/
+/* Document
+/********************************************/
+
+.document {
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+	left: 0px; top: 0px;
+	margin: 0; padding: 5px;
+	width: calc(100% - 210px);
+}
+
+.scroll {
+	overflow: hidden;
+	overflow-x: scroll;
+}
+
+/* Marche pas ça ... */
+.document::-webkit-scrollbar { 
+	width: 0 !important;
+	height: 0 !important;
+}
+
+.placer {
+	max-width: 640px;
+	display: block;
+	margin: 0 auto;	
+	padding: 25px;
+}
+
+.placer_stage{
+	width: 1000px;
+}
+
+/********************************************/
+/* Message 
+/********************************************/
+
+.message {
+	max-width: 75%;
+	margin: 25px 10px;
+	padding: 5px;
+	border-radius: 3px;
+	text-align: left;
+	display: block;
+	margin: 10px auto
+}
+
+.message div {
+	max-width: 100%;
+	padding: 0 10px 10px;
+	margin: 5px;
+	border: none;
+}
+
+/********************************************/
+/* Formulaire
+/********************************************/
+
+#ajouter form {
+	display: block;
+	margin: 25px auto;
+	padding: 5px 0;
+	max-width: 480px;
+	border-radius: 3px;
+	background-color: #FF9E80; /* A100 */
+}
+
+#ajouter div,
+#ajouter form div:not(.radio) {
+	clear: both;
+	margin: 15px 0;
+	padding: 5px 0;
+}
+
+#ajouter form .header {
+	margin: 25px 10px !important;
+	/*padding: 25px;*/
+	text-align: center;
+	border: none;
+	border-bottom: solid 3px #E65100; /* 900 */
+}
+
+#ajouter form .header h3 {
+	text-align: left;
+}
+
+#ajouter form .radio {
+	width: 35%;
+	margin: 15px auto;
+	padding: 5px 0;
+}
+
+#ajouter div select,
+#ajouter div:not(.radio) input:not(.submit),
+#ajouter div:not(.radio) label {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#ajouter div:not(.radio) label {
+	width: 120px;
+	float: left;
+	padding: 8px 0px 8px 25px; 
+}
+
+#ajouter div select,
+#ajouter div:not(.radio) input:not(.submit) {
+	padding: 7px;
+	margin: 0 15px 0 50px;
+	border-radius: 3px;
+}
+
+#ajouter div:not(.radio) input:not(.submit) {
+	width: 250px;
+}
+
+#ajouter div select {
+	width: 264px;
+}
+
+#ajouter div {
+	position: relative;
+}
+
+#ajouter div select:focus,
+#ajouter div:not(.radio) input:not(.submit):focus {
+	outline: none;
+	box-shadow: 0px 0px 8px 0px rgba(50, 120, 255, 0.75);
+	border: solid 1px rgb(50, 120, 255);
+}
+
+.defaut {
+	box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.75);
+	border: solid 1px transparent;
+
+}
+
+.invalide {
+	box-shadow: 0px 0px 8px 0px rgba(255, 50, 120, 0.75);
+	border: solid 1px rgb(255, 50, 120);
+
+}
+
+.valide {
+	box-shadow: 0px 0px 8px 0px rgba(0, 240, 125, 0.75);
+	border: solid 1px rgb(0, 240, 125);
+}
+
+/**
+ * Hint, indication dans le formulaire (erreurs, infos ...)
+ */
+
+ #ajouter span.hint {
+	transition: all 250ms ease;
+	position: absolute;
+	left: calc(100% + 15px);
+	top: 6px;
+	min-height: .8em;
+	font-size: .8em;
+	width: 250px;
+	border-radius: 2px;
+	padding: 3px;
+ }
+
+ .erreur {
+	border: solid 1px #B71C1C;
+	background-color: #FFEBEE;
+ }
+
+ .info {
+	border-color: solid 1px #FFC107;
+	background-color: #FFF8E1;
+ }
+
+ /********************************************/
+/* Formulaire pour choisir la classe
+/********************************************/
+
+#choix_classe {
+	max-width: 310px;
+	margin: 10px auto;
+	padding: 5px;
+	border-radius: 3px;
+}
+
+#choix_classe div:not(div:last-child) {
+	display: block;
+	max-width: 62px;
+	border-radius: 3px;
+	padding: 3px;
+}
+
+#choix_classe div:hover {
+	transition: all 250ms ease-in-out;
+}
+
+.submit {
+	font-size: 1em; 
+	vertical-align: top;
+	display: block;
+	width: auto;
+	height: 27px;
+	margin: 15px auto;
+	padding: 5px 15px 23px 15px;
+	color: #FFFFFF;
+	border: none;
+	border-radius: 3px;
+}
+
+.classe {
+	width: 100%;
+	text-align: left;
+	font-size: 3em;
+	display: block;
+}
+
+option:nth-child(odd) {
+  background-color: #F7F7F7;
+}
+
+.ajax-loader {
+  display: block;
+  margin: 5px auto;
+}

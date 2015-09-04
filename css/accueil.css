@@ -1,0 +1,107 @@
+/********************************************/
+/* Style de la page "accueil.php"
+/********************************************/
+
+#accueil {
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+	left: 0px; top: 0px;
+	margin: 0; padding: 5px;
+	width: calc(100% - 10px);
+
+}
+
+/********************************************/
+/* boutons
+/********************************************/
+
+#boutons_accueil a {
+	display: inline-block;
+	vertical-align: top;
+	width: 200px;
+	height: 200px;
+	margin: 20px 5px; padding: 0px;
+	border: none;
+	border-bottom: solid 4px;
+	transition: all 250ms ease;
+	border-radius: 3px;
+	text-decoration: none;
+	box-shadow: 0px 0px 7px 0px rgba(50, 50, 50, 0.75);
+}
+
+#boutons_accueil a:active,
+#boutons_accueil a:focus {
+	box-shadow: 0px 0px 9px 0px rgba(65, 65, 65, 0.75);
+}
+
+#boutons_accueil span {
+	padding: 0; margin: 50px auto;
+	display: block;
+	text-decoration: none;
+	text-align: center;
+	font-weight: bold;
+	font-size: 2em;
+}
+
+#boutons_accueil p {
+	display: block;
+	padding: 0; margin: 20px;
+	color: #FFFFFF;
+}
+
+
+
+/********************************************/
+/* bouton "module etudiants"
+/********************************************/
+
+#boutons_accueil a:nth-child(1) {
+	border-bottom-color: #1A237E; /* 900 */
+	background-color: #303F9F; /* 700 */
+}
+
+#boutons_accueil a:nth-child(1):hover {
+	background-color: #283593; /* 800 */
+}
+
+#boutons_accueil a:nth-child(1) span {
+	color: #FFFFFF;
+}
+
+/********************************************/
+/* bouton "module stages"
+/********************************************/
+
+#boutons_accueil a:nth-child(2) {
+	border-bottom-color: #E65100; /* 900 */
+	background-color: #F57C00; /* 700 */
+
+}
+
+#boutons_accueil a:nth-child(2):hover {
+	background-color: #EF6C00; /* 800 */
+}
+
+#boutons_accueil a:nth-child(2) span {
+	color: #FFFFFF;
+}
+
+/********************************************/
+/* bouton "module devenirs"
+/********************************************/
+
+#boutons_accueil a:nth-child(3) {
+	border-bottom-color: #004D40; /* 900 */
+	background-color: #00796B; /* 700 */
+}
+
+#boutons_accueil a:nth-child(3):hover {
+	background-color: #00695C; /* 800 */
+}
+
+#boutons_accueil a:nth-child(3) span {
+	color: #FFFFFF;
+}
+
+

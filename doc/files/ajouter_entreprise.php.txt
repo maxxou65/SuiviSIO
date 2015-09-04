@@ -1,0 +1,396 @@
+<?php
+/**
+ * Formulaire d'ajout d'une entreprise
+ * @package mod_stages
+ * @version 1.0.0
+ * 
+ * Permet à l'utilisateur d'ajouter une entreprise avec son tuteur 
+ * Le tuteur est employé surpervisant l'étudiant au sein de l'entreprise
+ *
+ * Vérification des données requises avant l'envoie de la requête pour remplir la base de données
+ * 
+ * Dû aux contraintes de clefs étrangère de la base de données, le tuteur est d'abord ajouté à la base, puis il est selectionner,
+ * puis l'entreprise est ajouter avec la clef étrangère du tuteur correspondant
+ *
+ * @author Anthony Lozano
+ */
+
+/** 
+ * Inclusion de la session
+ * Definition du module. A améliorer
+ */
+include_once('../connexion/session.php');
+$_SESSION['MOD'] = "_"."stages";
+$mod = $_SESSION['MOD'];
+
+/**
+ * Permet l'affichage de la liste des raisons sociales contenu dans la base de donnèes dans le champs 'NOM' (ou raison sociale) du formulaire
+ *
+ * @param object $connexion Instance de l'objet PDO permettant la connexion et le dialogue avec la base 
+ * 
+ * @return string $liste contient les éléments HTML (<datalist>) permettant d'afficher la liste des raisons sociales d'entreprises sur le champ 'raison sociale'
+ */
+function listNom($connexion){
+	$sql ="SELECT `NOM_ENTREPRISE` FROM `ENTREPRISE`;";
+	try {
+		$res = $connexion->query($sql); 
+		$table = $res->fetchAll(PDO::FETCH_ASSOC);		
+	} catch(PDOException $e){
+		$message = newLineMsg($e->getMessage());
+	}
+	$liste = '<datalist id="raisons_sociales"';
+	foreach ($table as $row) {
+		$liste .= '<option value="'.$row['NOM_ENTREPRISE'].'">';
+	}
+	$liste .= '</datalist>';
+
+	echo $liste;
+}
+
+/**
+ * Déclaration et initialisation des variables afficher dans le formulaire
+ * - Valeurs des données rentré par l'utilisateur, pour garder les entrées en cas d'erreur, où les envoyés dans la base
+ * - Erreurs à afficher dans le cas où le formulaire est incorrect 
+ */
+
+	/** Champs correspondant à l'entreprise */
+	$nom = 	$type = $adresse = 	$cpost = $ville = "";
+
+	/** Erreurs des champs */
+	$nomErr = $typeErr = $adresseErr = $cpostErr = $villeErr = "";
+
+	/** Champs correspondant au tuteur */
+	$nom_tuteur = $prenom_tuteur = 	$service_tuteur = $status_tuteur = $tel_tuteur = $mail_tuteur = "";
+
+	/** Erreurs des champs */
+	$nom_tuteurErr = $prenom_tuteurErr = 	$service_tuteurErr = $status_tuteurErr = $tel_tuteurErr = $mail_tuteurErr = "";
+
+
+/**
+ * cette fonction formate les entrées du formulaire, afin d'éviter toute faile de sécurité (XSS, injections sql, ...)
+ *
+ * @param mixed $data Données à formater (chaîne, nombre, date, ...)
+ * 
+ * @return mixed Données passer en paramètre formaté
+ */
+function test_input($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
+
+
+
+/** Si le formulaire est envoyé */
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+	/** @var boolean détermine si le formulaire est correct ou pas*/
+	$formulaireCorrect = TRUE;
+	$message = "";
+
+	/** récupération des entrées pour l'entreprise du formulaire dans des variables temporaires */
+	$type = $_POST['TYPE'];
+	$adresse = $_POST['ADRESSE'];
+	$cpost = $_POST['CPOST'];
+	$ville = $_POST['VILLE'];
+	$nom = $_POST['NOM'];
+
+	/**
+	 * Vérification de la raison sociale (nom) 
+	 * Requis
+	 * Pas de condition de validation particulière 
+	 */	/** vérification de la raison sociale (nom), pas de condition particulière */
+	if (empty($nom)) {
+		$nomErr = "Nom obligatoire";
+		$formulaireCorrect = FALSE;
+	} else {
+		$nom = test_input($nom);
+	}
+
+	/**
+	 * Vérification du type
+	 * Requis
+	 * Pas de condition de validation particulière 
+	 */
+	if (empty($type)) {
+		$typeErr = "Type d'entreprise obligatoire";
+		$formulaireCorrect = FALSE;
+	} else {
+		$type = test_input($type);
+	}
+
+	/**
+	 * Vérification de l'adresse
+	 * Optionnel
+	 * Pas de condition de validation particulière 
+	 */
+	$adresse = test_input($adresse);
+
+	/**
+	 * Vérification du code postal 
+	 * Optionnel
+	 * 5 chiffres maximum
+	 */
+	if (empty($cpost)){
+		$cpost = "NULL";
+	} else {
+		$cpost = test_input($cpost);
+		if(strlen($cpost) < 5) {
+			$cpostErr = "Seulement 5 chiffres sont acceptés"; 
+			$formulaireCorrect = FALSE;
+		}
+	}
+
+	/**
+	 * Vérification de la ville
+	 * Optionnel
+	 * Pas de condition de validation particulière 
+	 */
+	if (empty($ville)) {
+		$villeErr = "Ville obligatoire";
+		$formulaireCorrect = FALSE;
+	} else {
+		$ville = test_input($ville);
+	}
+
+	/** récupération des entrées pour le tuteur de l'entreprise du formulaire dans des variables temporaires */
+	$nom_tuteur = $_POST['NOM_TUTEUR'];
+	$prenom_tuteur = $_POST['PRENOM_TUTEUR'];
+	$service_tuteur = $_POST['SERVICE_TUTEUR'];
+	$status_tuteur = $_POST['STATUS_TUTEUR'];
+	$tel_tuteur = $_POST['TEL_TUTEUR'];
+	$mail_tuteur = $_POST['MAIL_TUTEUR'];
+
+	/**
+	 * Vérification du nom du tuteur
+	 * Requis
+	 * Pas de condition de validation particulière 
+	 */
+	if (empty($nom_tuteur)) {
+		$nom_tuteurErr = "Nom du tuteur obligatoire";
+		$message = newLineMsg("Certains champs sont incomplets");
+		$formulaireCorrect = FALSE;
+	} else {
+		$nom_tuteur = test_input($nom_tuteur);
+	}
+
+	/**
+	 * Vérification du prénom du tuteur
+	 * Optionnel
+	 * Pas de condition de validation particulière 
+	 */
+	$prenom_tuteur = test_input($prenom_tuteur);
+
+	/**
+	 * Vérification du service
+	 * Optionnel
+	 * Pas de condition de validation particulière 
+	 */
+	$service_tuteur = test_input($service_tuteur);
+
+	/**
+	 * Vérification du status (ou poste)
+	 * Requis
+	 * Pas de condition de validation particulière 
+	 */
+	if (empty($status_tuteur)) {
+		$status_tuteurErr = "Status tuteur obligatoire";
+		$formulaireCorrect = FALSE;
+	} else {
+		$status_tuteur = test_input($status_tuteur);
+	}
+
+	/**
+	 * Vérification du téléphone du tuteur
+	 * Requis
+	 * Pas de condition de validation particulière (cas du numéro internationnal)
+	 */
+	if (empty($tel_tuteur)) {
+		$tel_tuteurErr = "Téléphone du tuteur obligatoire";
+		$formulaireCorrect = FALSE;
+	} else {
+		$tel_tuteur = test_input($tel_tuteur);
+	}
+
+	/**
+	 * Vérification du mail du tuteur
+	 * Requis
+	 * Vérification de la syntaxe avec un filtre
+	 */
+	if (empty($mail_tuteur)) {
+		$mail_tuteurErr = "E-mail du tuteur obligatoire";
+		$formulaireCorrect = FALSE;
+	} else {
+		$mail_tuteur = test_input($mail_tuteur);
+		if (!filter_var($mail_tuteur, FILTER_VALIDATE_EMAIL)) {
+		  $mail_tuteurErr = "Adresse mail invalide"; 
+		  $formulaireCorrect = FALSE;
+		}
+	}
+ 
+	/** Si le formulaire à été soumis, on inserre les données dans la base, sinon on affiche les erreurs */
+	if ($formulaireCorrect == TRUE) {
+		
+		/** Initialisation du message, simplifie son traitement en fonction des erreurs */
+		$message = "";
+
+		/**
+		 * Phase 1
+		 * Insertion du tuteur dans la base
+		 */
+
+		$sql = "INSERT INTO `TUTEUR`(`NOM_TUTEUR`, `PRENOM_TUTEUR`, `SERVICE_TUTEUR`, `STATUS_TUTEUR`, `TEL_TUTEUR`, `MAIL_TUTEUR`)
+					VALUES (\"$nom_tuteur\", \"$prenom_tuteur\", \"$service_tuteur\", \"$status_tuteur\", $tel_tuteur, \"$mail_tuteur\");";
+
+		try {
+			$connexion->query($sql);  
+		} catch(PDOException $e){
+			$message .= newLineMsg("Problème pour ajouter le tuteur, vérifiez vos données.").newLineMsg($e->getMessage()).newLineMsg($sql);
+		}
+
+		/**
+		 * Phase 2
+		 * Selection du tuteur franchement ajouté
+		 */
+
+		$sql = "SELECT `ID_TUTEUR`
+				FROM `TUTEUR`
+				WHERE `NOM_TUTEUR` = '$nom_tuteur'
+				AND `PRENOM_TUTEUR` = '$prenom_tuteur'
+				AND `SERVICE_TUTEUR` = '$service_tuteur'
+				AND `STATUS_TUTEUR` = '$status_tuteur'
+				AND `TEL_TUTEUR` = $tel_tuteur
+				AND `MAIL_TUTEUR` = '$mail_tuteur';";
+
+		try {
+			$res = $connexion->query($sql);  
+			$table = $res->fetch(PDO::FETCH_ASSOC);		
+		} catch(PDOException $e){
+			$message .= newLineMsg("Problème pour ajouter le tuteur, vérifier vos données.").newLineMsg($e->getMessage()).newLineMsg($sql);
+		}
+
+		$id_tuteur = $table['ID_TUTEUR'];
+
+		/**
+		 * phase 3 - Final
+		 * Insertion de l'entreprise avec on tuteur dans la base
+		 */
+
+		$sql = "INSERT INTO `ENTREPRISE`(`NOM_ENTREPRISE`, `TYPE_ENTREPRISE`, `ADRESSE_ENTREPRISE`, `CPOSTAL_ENTREPRISE`, `VILLE_ENTREPRISE`, `ID_TUTEUR`)
+				 	VALUES ( \"$nom\", \"$type\", \"$adresse\", $cpost, \"$ville\", $id_tuteur);";
+
+		$message .= newLineMsg("Entreprise \"".$nom."\" à bien été ajoutée.")
+				 . newLineMsg('<a href="'.htmlspecialchars($_SERVER['PHP_SELF']).'">'."Cliquez ici pour faire un nouvel ajout.".'</a>');
+
+		try {
+			$connexion->query($sql);  
+		} catch(PDOException $e){
+			$message .= newLineMsg("Problème pour ajouter l'entreprises, vérifier vos données.").newLineMsg($e->getMessage()).newLineMsg($sql);
+		}
+
+	} else {
+		$message .= newLineMsg("Certain(s) champ(s) obligatoire(s) sont incomplet(s), veuillez vérifié vos données");
+	}
+}
+?>
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+	<?php
+	/** Inclusion des différents paramètres présent dans l'élément head commum aux pages */
+	include("../struct/param_head.php");
+	echo '<title>'."Ajout d'une entreprises".$title.'</title>';
+	?>
+	<link rel="stylesheet" type="text/css" href="../css/stage.css">
+</head>
+<body><!--
+--><?php
+/** Inclusion de l'élément header (en-tête), dépend du module */
+include("../struct/entete".$mod.".php");
+
+/** Inclusion de l'élément nav, correspondant au menu horizontal (liens vers les modules) */
+include("../struct/menu_horizontal.php");
+
+/** Inclusion de l'élément nav, correspondant au menu vertical, dépend du module */
+include("../struct/menu_vertical".$mod.".php");
+?><!--
+--><section id="ajouter" class="document">
+
+	<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post"><!--
+	 --><div class="header">
+			<h2>Formulaire d'ajout d'une entreprise</h2>
+		</div><!--
+	 --><div>
+			<label for="nom">Raison sociale *</label>
+			<input name="NOM" list="raisons_sociales" value="<?php echo $nom; ?>" type="text" id="nom" class="defaut" tabindex="1">
+			<span class="hint"><?php echo $nomErr; ?></span>
+			<?php listNom($connexion); ?>
+		</div><!--
+	 --><div>
+			<label for="type">Type *</label>
+			<input name="TYPE" value="<?php echo $type; ?>" type="text" id="type" class="defaut" tabindex="2">
+			<span class="hint"><?php echo $typeErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="adresse">Ville *</label>
+			<input name="VILLE" value="<?php echo $ville; ?>" type="text" id="adresse" class="defaut" tabindex="3">
+			<span class="hint"><?php echo $villeErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="adresse">Adresse</label>
+			<input name="ADRESSE" value="<?php echo $adresse; ?>" type="text" id="adresse" class="defaut" tabindex="4">
+			<span class="hint"><?php echo $adresseErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="cpost">Code postal</label>
+			<input name="CPOST" value="<?php echo $cpost; ?>" type="number" id="cpost" class="defaut" tabindex="5">
+			<span class="hint"><?php echo $cpostErr; ?></span>
+		</div><!--
+	 --><div class="header">
+	 		<h3>Tuteur</h3>
+	 	</div><!--
+	 --><div>
+			<label for="nom_tuteur">Nom *</label>
+			<input name="NOM_TUTEUR" value="<?php echo $nom_tuteur; ?>" type="text" id="nom_tuteur" class="defaut" tabindex="6">
+			<span class="hint"><?php echo $nom_tuteurErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="prenom_tuteur">Prénom</label>
+			<input name="PRENOM_TUTEUR" value="<?php echo $prenom_tuteur; ?>" type="text" id="prenom_tuteur" class="defaut" tabindex="7">
+			<span class="hint"><?php echo $prenom_tuteurErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="tel_tuteur">Téléphone *</label>
+			<input name="TEL_TUTEUR" value="<?php echo $tel_tuteur; ?>" type="tel" id="tel_tuteur" class="defaut" tabindex="8">
+			<span class="hint"><?php echo $tel_tuteurErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="mail_tuteur">Mail *</label>
+			<input name="MAIL_TUTEUR" value="<?php echo $mail_tuteur; ?>" type="email" id="mail_tuteur" class="defaut" tabindex="9">
+			<span class="hint"><?php echo $mail_tuteurErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="status_tuteur">Status *</label>
+			<input name="STATUS_TUTEUR" value="<?php echo $status_tuteur; ?>" type="text" id="status_tuteur" class="defaut" tabindex="10">
+			<span class="hint"><?php echo $status_tuteurErr; ?></span>
+		</div><!--
+	 --><div>
+			<label for="service_tuteur">Service</label>
+			<input name="SERVICE_TUTEUR" value="<?php echo $service_tuteur; ?>" type="text" id="service_tuteur" class="defaut" tabindex="11">
+			<span class="hint"><?php echo $service_tuteurErr; ?></span>
+		</div><!--
+	 --><div>
+	 		<input class="submit transition" type="submit" value="Soumettre">
+	 		<!-- <input class="submit transition" type="reset" value="Réinitialiser"> -->
+	 	</div>
+	</form>
+<?php include("../struct/message.php"); ?>
+</section><!-- 
+--><?php
+/** Inclusion de l'éléménet footer (pied de page) */
+include("../struct/pieddepage.php");
+?>
+<script src="../js/validForm_entreprise.jq.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<?php
+// <!--
+// ================================
+// 	Création de la session
+// 	Redirection des utilisateurs non identifié
+// ================================
+// -->
+
+include("../connexion/session.php");
+$_SESSION['MOD']="_"."stages";
+$mod=$_SESSION['MOD'];
+
+// <!--
+// ================================
+// 	Inclusion des fichiers permettant l'affichage des listes déroulantes
+// 	Initialisation des variables
+// ================================
+// -->
+
+
+// Inclusion de tous les fichiers comportant une ou des fonctions de listes déroulantes
+// On met tout les suffixes des fichiers dans un tableau
+$tables=array("prof","date","classe","etudiant","tuteur","entreprise");
+// On compte le nombre de suffixes présents dans le tableau, et on inclue les fichiers comportant le suffixe demandé.
+for($i=0;$i<count($tables);$i++)
+{
+	include_once("../fonctions/liste_deroulante_".$tables[$i].".php");
+}
+include_once("../fonctions/radio_bouton_classe.php");
+
+/* VARIABLE - DONNEES */
+//-----------------------
+// Du stage
+$id_tuteur = $id_etudiant = $id_entreprise = $id_prof_superviseur = $id_prof_visiteur = $id_periode = "";
+$code_classe="SIO1";
+//-----------------------
+// De l'entreprise
+$nom_entreprise = $type_entreprise = $adresse_entreprise = $cpost_entreprise = $ville_entreprise = $tel_entreprise = $email_entreprise = "";
+//-----------------------
+// Du tuteur
+$nom_tuteur = $prenom_tuteur = $tel_tuteur = $mail_tuteur = $status_tuteur = $service_tuteur = "";
+//-----------------------
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<!--
+	================================
+		paramètres du <head>
+		commun aux pages (inclusion de fichiers CSS, JS; balise meta; ...) 
+	================================
+	-->
+	<?php include("../struct/param_head.php");
+	echo '<title>'."Ajout d'un stage".$title.'</title>';
+	// nom de votre page
+	?>
+	<link rel="stylesheet" type="text/css" href="../css/stage.css">
+</head>
+<?php
+
+// Récupération des données du formulaire
+$confirmation="";
+$message="";
+
+// Fonction permettant le traitement des champs du formulaire afin de retirer des erreurs.
+function test_input($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
+// Dans le cas où le formulaire est saisi
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+	$erreur=false;
+	
+	//-----------------------------------------------------------------
+	// Validation des champs du formulaire tuteur
+	//-----------------------------------------------------------------
+	if(!empty($_POST['NOM_TUTEUR'])){
+		$nom_tuteur = test_input($_POST['NOM_TUTEUR']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['PRENOM_TUTEUR'])){
+		$prenom_tuteur = test_input($_POST['PRENOM_TUTEUR']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['TEL_TUTEUR'])){
+		$tel_tuteur = test_input($_POST['TEL_TUTEUR']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['MAIL_TUTEUR'])){
+		$mail_tuteur = test_input($_POST['MAIL_TUTEUR']);
+	}
+	if(!empty($_POST['STATUS_TUTEUR'])){
+		$status_tuteur = test_input($_POST['STATUS_TUTEUR']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['SERVICE_TUTEUR'])){
+		$service_tuteur = test_input($_POST['SERVICE_TUTEUR']);
+	}
+	else{
+		$erreur=true;
+	}
+	
+	if(!$erreur){
+		
+		//-----------------------------------------------------------------
+		// Ajout du tuteur dans la table TUTEUR
+		//-----------------------------------------------------------------
+		try{
+		$requete="insert into TUTEUR(NOM_TUTEUR,PRENOM_TUTEUR,SERVICE_TUTEUR,STATUS_TUTEUR,TEL_TUTEUR,MAIL_TUTEUR)
+		values('$nom_tuteur','$prenom_tuteur','$service_tuteur','$status_tuteur','$tel_tuteur','$mail_tuteur');";
+		$connexion->exec($requete);
+		}
+		catch(PDOException $e)
+		{
+			$message.="\nLe tuteur n'a pas pu être ajouté dans la base de données";
+			$message.=$e->getMessage();
+		}
+	}
+	
+	//-----------------------------------------------------------------
+	// Validation des champs du formulaire de l'entreprise
+	//-----------------------------------------------------------------
+	if(!empty($_POST['NOM_ENTREPRISE'])){
+		$nom_entreprise = test_input($_POST['NOM_ENTREPRISE']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['TYPE_ENTREPRISE'])){
+		$type_entreprise = test_input($_POST['TYPE_ENTREPRISE']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['ADRESSE_ENTREPRISE'])){
+		$adresse_entreprise = test_input($_POST['ADRESSE_ENTREPRISE']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['CPOSTAL_ENTREPRISE'])){
+		$cpost_entreprise = test_input($_POST['CPOSTAL_ENTREPRISE']);
+	}
+	if(!empty($_POST['VILLE_ENTREPRISE'])){
+		$ville_entreprise = test_input($_POST['VILLE_ENTREPRISE']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['TEL_ENTREPRISE'])){
+		$tel_entreprise = test_input($_POST['TEL_ENTREPRISE']);
+	}
+	else{
+		$erreur=true;
+	}
+	if(!empty($_POST['MAIL_ENTREPRISE'])){
+		$mail_entreprise = test_input($_POST['MAIL_ENTREPRISE']);
+	}
+	
+	//-----------------------------------------------------------------
+	// Recherche de l'id du tuteur du stage pour l'inclure en clef
+	// étrangère dans la table ENTREPRISE
+	//-----------------------------------------------------------------
+	if($id_tuteur==0)
+	{
+		$requete="select ID_TUTEUR from TUTEUR where NOM_TUTEUR='$nom_tuteur' and PRENOM_TUTEUR='$prenom_tuteur' and TEL_TUTEUR='$tel_tuteur';";
+		try {
+			$resultats = $connexion->query($requete);  
+			$tableau = $resultats->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e){
+			$message.="\nProbleme pour choisir le tuteur sélectionné";
+			$message.=$message.$e->getMessage();
+		}
+		if($message==""){
+			$id_tuteur = $tableau['ID_TUTEUR'];	
+		}
+	}
+	
+	if(!$erreur){
+		
+		//-----------------------------------------------------------------
+		// Ajout de l'entreprise dans la table ENTREPRISE
+		//-----------------------------------------------------------------
+		try{
+		$requete="insert into ENTREPRISE(NOM_ENTREPRISE,TYPE_ENTREPRISE,ADRESSE_ENTREPRISE,CPOSTAL_ENTREPRISE,
+										 VILLE_ENTREPRISE,TEL_ENTREPRISE,EMAIL_ENTREPRISE,ID_TUTEUR)
+		values('$nom_entreprise','$type_entreprise','$adresse_entreprise',$cpost_entreprise,
+			   '$ville_entreprise','$tel_entreprise','$email_entreprise',$id_tuteur);";
+		$connexion->exec($requete);
+		}
+		catch(PDOException $e)
+		{
+			$message.="\nL'entreprise n'a pas pu être ajouté dans la base de données ";
+			$message.="\n|$nom_entreprise|$type_entreprise|$adresse_entreprise|$cpost_entreprise|-->$ville_entreprise<--|
+						$tel_entreprise|-->$email_entreprise<--|$id_tuteur|";
+			$message.=$e->getMessage();
+		}
+	}
+	
+	//-----------------------------------------------------------------
+	// Validation des champs du formulaire du stage
+	// et insertion dans la base de données
+	//-----------------------------------------------------------------
+	if(!empty($_POST['ID_ETUDIANT'])){
+		$id_etudiant = test_input($_POST['ID_ETUDIANT']);
+	}
+	$id_etu=$_POST['ID_ETUDIANT'];
+	$id_periode=$_POST['ID_DPERIODE'];
+	if($_POST['ID_PROF_VISITEUR']!=''){	
+		$id_prof_superviseur=$_POST['ID_PROF_VISITEUR'];
+	}
+	$id_prof_visiteur=$_POST['ID_PROF_VISITEUR'];
+	$code_classe=$_POST['CODE_CLASSE'];
+	
+	//-----------------------------------------------------------------
+	// Recherche de l'id de l'entreprise pour l'inclure en clef
+	// étrangère dans la table STAGE
+	//-----------------------------------------------------------------
+	if($id_entreprise==0)
+	{
+		$requete="select ID_ENTREPRISE from ENTREPRISE 
+				  where NOM_ENTREPRISE='$nom_entreprise' and TYPE_ENTREPRISE='$type_entreprise' 
+														 and ADRESSE_ENTREPRISE='$adresse_entreprise'
+														 and VILLE_ENTREPRISE='$ville_entreprise'
+														 and TEL_ENTREPRISE='$tel_entreprise';";
+		try {
+			$resultats = $connexion->query($requete);  
+			$tableau = $resultats->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e){
+			$message.="\nProbleme pour choisir l'entreprise sélectionnée";
+			$message.=$message.$e->getMessage();
+		}
+		if($message==""){
+			$id_entreprise = $tableau['ID_ENTREPRISE'];	
+		}
+	}
+	
+	if(!$erreur){
+		
+		//-----------------------------------------------------------------
+		// Ajout du stage dans la table STAGE
+		//-----------------------------------------------------------------		
+		try{
+			$requete="insert into STAGE(ID_TUTEUR,ID_PROF,ID_ETU,ID_ENTREPRISE,ID_PERIODE,ID_PROF_VISITER,CLASSE_STAGE)
+			values($id_tuteur,$id_prof_superviseur,$id_etudiant,$id_entreprise,$id_periode,$id_prof_visiteur,'$code_classe');";
+			$connexion->exec($requete);
+		}
+		catch(PDOException $e)
+		{
+			$message.="\nLe stage n'a pas pu être ajouté dans la base de données ";
+			$message.="";
+			$message.=$message.$e->getMessage();
+			//echo $message;
+		}
+	}
+	
+	//-----------------------------------------------------------------
+	// Message d'information sur l'état de validation du formulaire
+	//-----------------------------------------------------------------
+	if($message=="" && $erreur==false){
+		$confirmation="Stage ajouté";
+	}
+	else{
+		echo $message;
+		$confirmation="Le formulaire n'est pas complet. Vérifier que les champs (*) soient bien remplis";
+	}
+}
+?>
+<body><!-- entête (header) 
+--><?php include("../struct/entete".$mod.".php"); ?><!-- menu horizontal 
+--><?php include("../struct/menu_horizontal.php"); ?><!-- menu vertical 
+--><?php include("../struct/menu_vertical".$mod.".php"); ?><!--
+	contenu de la page
+	appliquez un ID sur votre section pour y appliquer un style particulier en CSS
+--><section id="ajouter" class="document">
+																		<!-- Endroit où il faut modifier -->
+
+		<!-- 
+			Formulaire d'ajout de stage aux étudiants 
+		-->
+		<?php include("../mod_stages/formulaires/formulaire_ajout_stage.php"); ?>
+		<!--
+			Message donnant l'état de validation du formulaire.
+			Stage ajouté ou Message disant qu'il y a une erreur au moins
+		-->
+		<br/><br/><p id='confirmation'><b><?php echo $confirmation ?></b></p>
+		<!--
+			Formulaire d'ajout d'entreprise
+		-->
+		<?php //include("../formulaires/formulaire_ajout_entreprise.php"); ?>
+		<!--
+			<p>Olivier, jete un coup d'oeil aux <a href="http://www.w3schools.com/tags/tag_datalist.asp">éléments datalist</a>, 
+			ça pourrait peut être t'aider ;)
+			<br>Anthony.
+		</p>-->
+		<!--
+			Pour les radios boutons:
+			http://openclassrooms.com/forum/sujet/recuperer-les-valeurs-des-boutons-type-radio-avec-ajax-94520
+			http://openclassrooms.com/courses/dynamisez-vos-sites-web-avec-javascript/xmlhttprequest-1
+		-->
+	</div>
+</section>
+<script src="../js/jquery.js"></script>
+<!-- 
+	Modification de la liste déroulante d'étudiant en fonction de la classe choisie (sio1 ou sio2) 
+-->
+<script src="../js/modifier_liste_etudiant_stage.js" type="text/javascript"></script>
+<script src="../js/valider_recherche_entreprise_stage.js" type="text/javascript"></script>
+<!--
+	Pied de page (footer)
+--><?php include("../struct/pieddepage.php"); ?>
+</body>
+</html>
