@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function()){
   console.log("Document prêt.");
 
   // $('.submit').css("visibility", "hidden");

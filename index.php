@@ -5,7 +5,8 @@
  * @param type $data 
  * @return type
  */
-function test_input($data) {
+function test_input($data) 
+{
   $data = trim($data);
   $data = stripslashes($data);
   $data = htmlspecialchars($data);
@@ -25,41 +26,53 @@ function test_input($data) {
 /*
  * Si formulaire soumis
  */
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") 
+{
 
 	// Test des entrées (inputs)
 	// -----------
 
-	if (empty($_POST['ID_CONNEXION'])) {
+	if (empty($_POST['ID_CONNEXION'])) 
+    {
 		$idErr = "Identifiant est obligatoire ... et oui ...";
 		$formValid = FALSE;
-	} else {
+	} 
+    else 
+    {
 		$id = test_input($_POST['ID_CONNEXION']);
 	}
 
-	if (empty($_POST['MDP_CONNEXION'])) {
+	if (empty($_POST['MDP_CONNEXION'])) 
+    {
 		$mdpErr = "Mot de passe est obligatoire ... Sérieusement ...";
-	} else {
+	} 
+    else 
+    {
 		$mdp = test_input($_POST['MDP_CONNEXION']);
 	}
 
-	if ($formValid) {
+	if ($formValid) 
+    {
 
 		include_once("./connexion/connexion_by_id.php");
-		$connexion = getConnexion("etudiant", "azertyuiop");
+		$connexion = getConnexion("root", "");
 
 		$req = "SELECT `ID_CONNEXION`, `MDP_CONNEXION` FROM `connexion`;";
 		$res = $connexion->query($req);
 		$table_connexion = $res->fetchAll(PDO::FETCH_ASSOC);
 
-		foreach ($table_connexion as $table) {
-			if ($table == $_POST) {
+		foreach ($table_connexion as $table) 
+        {
+			if ($table == $_POST) 
+            {
 				session_start();
 				$_SESSION['CONNEXION']['ID'] = $id;
 				$_SESSION['CONNEXION']['MDP'] = $mdp;
 				header('Location: ./accueil.php');
 				exit;
-			} else {
+			} 
+            else 
+            {
 				$message = "Identifiant ou mot de passe incorrect.";
 			}
 		}

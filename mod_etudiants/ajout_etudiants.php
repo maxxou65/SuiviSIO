@@ -31,8 +31,9 @@ $code_origine=0;
 $code_regime=0;
 $code_spe=0;
 $message="";
-
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+$origine="";
+if($_SERVER["REQUEST_METHOD"] == "POST")
+{
 	$erreur=false;
 	//-----------------------------------------------------------------
 	// Validation des champs du formulaire étudiant
@@ -40,31 +41,42 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	// On récupère chaques champs du formulaire, et pour ceux 
 	// qui sont obligatoires vérifie qu'il n'y ait pas d'erreur.
 	//-----------------------------------------------------------------
-	if(!empty($_POST['NOM_ETU'])){
+	if(!empty($_POST['NOM_ETU']))
+    {
 		$nom = test_input($_POST['NOM_ETU']);
 	}
-	else{
+	else
+    {
 		$erreur=true;
 	}
-	if(!empty($_POST['PRENOM_ETU'])){
+	if(!empty($_POST['PRENOM_ETU']))
+    {
 		$prenom = test_input($_POST['PRENOM_ETU']);
 	}
-	else{
+	else
+    {
 		$erreur=true;
 	}
-	if(!empty($_POST['DNAISSANCE_ETU'])){
+	if(!empty($_POST['DNAISSANCE_ETU']))
+    {
 		$dnaissance = test_input($_POST['DNAISSANCE_ETU']);
 	}
-	else{
+	else
+    {
 		$erreur=true;
 	}
+    
 	//-----------------------------------------------------------------
 	// On récupère les données non obligatoires du formulaire
 	//-----------------------------------------------------------------
 	$nom = $_POST["NOM_ETU"];
 	$prenom = $_POST["PRENOM_ETU"];
 	$dnaissance = $_POST["DNAISSANCE_ETU"];
-	$origine=$_POST["ID_ORIGINE"];
+    if (isset($_POST['ID_ORIGINE'])) 
+    {
+    $origine = $_POST['ID_ORIGINE'];
+    }
+	//$origine=$_POST["ID_ORIGINE"];
 	$promotion=$_POST["ID_PROMOTION"];
 	$specialite=$_POST["CODE_SPECIALITE"];
 	$classe=$_POST["CODE_CLASSE"];
@@ -74,7 +86,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		//-----------------------------------------------------------------
 		//Formulaire soumis -> recuperation des données
 		//-----------------------------------------------------------------
-		$requete2="SELECT MAX(ID_ETU) as idetu_max FROM etudiant_temp;";
+		$requete2="SELECT MAX(ID_ETU) as idetu_max FROM etudiant;";
 		$resultat=$connexion->query($requete2);
 		$tab=$resultat->fetchAll(PDO::FETCH_ASSOC);
 		$idetu=$tab[0]['idetu_max'];
@@ -85,8 +97,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		//-----------------------------------------------------------------
 		try 
 		{
-			$requete="INSERT INTO etudiant_temp (ID_ORIGINE, ID_PROMOTION, CODE_SPECIALITE, CODE_CLASSE, NOM_ETU, PRENOM_ETU, DNAISSANCE_ETU, DOUBLANT1_ETU, DOUBLANT2_ETU, DIPLOME_ETU, REGIME) VALUES 
-			($origine, $promotion,'$specialite', '$classe', '$nom', '$prenom', '$dnaissance', 0, 0, 0, '$regime')";
+			$requete="INSERT INTO etudiant (ID_ORIGINE, ID_PROMOTION, CODE_SPECIALITE, CODE_CLASSE, NOM_ETU, PRENOM_ETU, DNAISSANCE_ETU, DOUBLANT1_ETU, DOUBLANT2_ETU, DIPLOME_ETU, REGIME) VALUES 
+			('$origine', '$promotion','$specialite', '$classe', '$nom', '$prenom', '$dnaissance', 0, 0, 0, '$regime')";
 			$connexion->exec($requete);
 		}
 		catch (PDOException $e) 

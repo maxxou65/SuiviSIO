@@ -299,35 +299,7 @@ INSERT INTO `etudiant` (`ID_ETU`, `ID_ORIGINE`, `ID_PROMOTION`, `CODE_SPECIALITE
 (2, 2, 7, 'SLAM', 'SIO2', 'Gillet', 'Maximilien', '1995-08-02', 0, 0, NULL, 'Demi-Pensionnaire'),
 (3, 3, 7, 'SLAM', 'SIO2', 'Mayeur', 'Olivier', '1992-12-17', 0, 0, NULL, 'Interne');
 
--- --------------------------------------------------------
 
---
--- Structure de la table `etudiant_temp`
---
-
-CREATE TABLE `etudiant_temp` (
-  `ID_ETU` bigint(4) NOT NULL AUTO_INCREMENT,
-  `ID_ORIGINE` bigint(4) DEFAULT NULL,
-  `ID_PROMOTION` bigint(4) DEFAULT NULL,
-  `CODE_SPECIALITE` char(20) DEFAULT NULL,
-  `CODE_CLASSE` char(20) DEFAULT NULL,
-  `NOM_ETU` varchar(255) DEFAULT NULL,
-  `PRENOM_ETU` varchar(255) DEFAULT NULL,
-  `DNAISSANCE_ETU` date DEFAULT NULL,
-  `DOUBLANT1_ETU` tinyint(1) DEFAULT NULL,
-  `DOUBLANT2_ETU` tinyint(1) DEFAULT NULL,
-  `DIPLOME_ETU` tinyint(1) DEFAULT NULL,
-  `REGIME` char(20) DEFAULT NULL,
-  PRIMARY KEY (`ID_ETU`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Contenu de la table `etudiant_temp`
---
-INSERT INTO `etudiant_temp` (`ID_ETU`, `ID_ORIGINE`, `ID_PROMOTION`, `CODE_SPECIALITE`, `CODE_CLASSE`, `NOM_ETU`, `PRENOM_ETU`, `DNAISSANCE_ETU`, `DOUBLANT1_ETU`, `DOUBLANT2_ETU`, `DIPLOME_ETU`, `REGIME`) VALUES
-(1, 1, 7, 'SLAM', 'SIO2', 'Lozano', 'Anthony', '1994-03-13', 0, 0, NULL, 'Externe'),
-(2, 2, 7, 'SLAM', 'SIO2', 'Gillet', 'Maximilien', '1995-08-02', 0, 0, NULL, 'Demi-Pensionnaire'),
-(3, 3, 7, 'SLAM', 'SIO2', 'Mayeur', 'Olivier', '1992-12-17', 0, 0, NULL, 'Interne');
 
 -- --------------------------------------------------------
 

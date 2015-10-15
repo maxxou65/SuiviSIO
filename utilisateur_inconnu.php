@@ -42,7 +42,7 @@ header ("Refresh: 5;URL=index.php");
 </section><!--
 --><?php
 
-// Inclusion de l'éléménet footer (pied de page)
+// Inclusion de l'élément footer (pied de page)
 include("./struct/pieddepage.php");
 
 ?>
