@@ -574,12 +574,21 @@ INSERT INTO `type_entreprise` (`ID_TYPE_ENTREPRISE`, `TYPE`) VALUES
 --
 DROP TABLE IF EXISTS `fiche_entreprise`;
 
-CREATE VIEW `fiche_entreprise` AS select `etudiant`.`CODE_CLASSE` 
-AS `CODE_CLASSE`,`etudiant`.`NOM_ETU` AS `NOM_ETU`,`etudiant`.`PRENOM_ETU` AS `PRENOM_ETU`,`etudiant`.`CODE_SPECIALITE` AS `CODE_SPECIALITE`,
-`dperiode`.`DATE_DEBUT` AS `DATE_DEBUT`,`dperiode`.`DATE_FIN` AS `DATE_FIN`,`tuteur`.`NOM_TUTEUR` AS `NOM_TUTEUR`,`professeur`.`NOM_PROF` AS 
-`NOM_PROF` from ((((((`etudiant` join `stage` on((`etudiant`.`ID_ETU` = `stage`.`ID_ETU`))) join `periode` on((`periode`.`ID_PERIODE` = `stage`.`ID_PERIODE`))) join `dperiode` on((`dperiode`.`ID_DPERIODE` = `periode`.`ID_DPERIODE`))) join `entreprise` 
-on((`entreprise`.`ID_ENTREPRISE` = `stage`.`ID_ENTREPRISE`))) join `tuteur` on((`tuteur`.`ID_TUTEUR` = `entreprise`.`ID_TUTEUR`))) 
-join `professeur` on((`professeur`.`ID_PROF` = `stage`.`ID_PROF`)));
+CREATE VIEW `fiche_entreprise` 
+AS select `etudiant`.`CODE_CLASSE` AS `CODE_CLASSE`,
+          `etudiant`.`NOM_ETU` AS `NOM_ETU`,
+          `etudiant`.`PRENOM_ETU` AS `PRENOM_ETU`,
+          `etudiant`.`CODE_SPECIALITE` AS `CODE_SPECIALITE`,
+          `dperiode`.`DATE_DEBUT` AS `DATE_DEBUT`,
+          `dperiode`.`DATE_FIN` AS `DATE_FIN`,
+          `tuteur`.`NOM_TUTEUR` AS `NOM_TUTEUR`,
+          `professeur`.`NOM_PROF` AS `NOM_PROF` 
+from (((((( `etudiant` join `stage` on (`etudiant`.`ID_ETU` = `stage`.`ID_ETU`)) 
+                       join `periode` on (`periode`.`ID_PERIODE` = `stage`.`ID_PERIODE`))
+                       join `dperiode` on (`dperiode`.`ID_DPERIODE` = `periode`.`ID_DPERIODE`))
+                       join `entreprise` on (`entreprise`.`ID_ENTREPRISE` = `stage`.`ID_ENTREPRISE`))
+                       join `tuteur` on (`tuteur`.`ID_TUTEUR` = `entreprise`.`ID_TUTEUR`))
+                       join `professeur` on (`professeur`.`ID_PROF` = `stage`.`ID_PROF`));
 
 --
 -- Contraintes pour les tables exportées

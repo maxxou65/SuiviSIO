@@ -28,7 +28,7 @@ include_once("../fonctions/liste_deroulante_specialite.php");
 $code_classe=0;
 $code_promotion=0;
 $code_origine=0;
-$code_regime=0;
+$code_regime='';
 $code_spe=0;
 $message="";
 
@@ -54,6 +54,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	}
 	if(!empty($_POST['DNAISSANCE_ETU'])){
 		$dnaissance = test_input($_POST['DNAISSANCE_ETU']);
+                // TODO : vérifier que c'est une vraie date
+                
+                // TODO si ok convertir la date pour le SQL : YYYY-MM-DD
+                
 	}
 	else{
 		$erreur=true;
@@ -64,17 +68,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	$nom = $_POST["NOM_ETU"];
 	$prenom = $_POST["PRENOM_ETU"];
 	$dnaissance = $_POST["DNAISSANCE_ETU"];
-	$origine=$_POST["ID_ORIGINE"];
+	$origine=$_POST["BAC_ORIGINE"];
 	$promotion=$_POST["ID_PROMOTION"];
 	$specialite=$_POST["CODE_SPECIALITE"];
 	$classe=$_POST["CODE_CLASSE"];
 	$regime=$_POST["REGIME"];
+        $login=$_POST["LOGIN"];
+        $password=$_POST["PASSWORD"];
 
 	if(!$erreur){
 		//-----------------------------------------------------------------
 		//Formulaire soumis -> recuperation des données
 		//-----------------------------------------------------------------
-		$requete2="SELECT MAX(ID_ETU) as idetu_max FROM etudiant_temp;";
+		$requete2="SELECT MAX(ID_ETU) as idetu_max FROM etudiant;";
 		$resultat=$connexion->query($requete2);
 		$tab=$resultat->fetchAll(PDO::FETCH_ASSOC);
 		$idetu=$tab[0]['idetu_max'];
@@ -85,8 +91,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		//-----------------------------------------------------------------
 		try 
 		{
-			$requete="INSERT INTO etudiant_temp (ID_ORIGINE, ID_PROMOTION, CODE_SPECIALITE, CODE_CLASSE, NOM_ETU, PRENOM_ETU, DNAISSANCE_ETU, DOUBLANT1_ETU, DOUBLANT2_ETU, DIPLOME_ETU, REGIME) VALUES 
-			($origine, $promotion,'$specialite', '$classe', '$nom', '$prenom', '$dnaissance', 0, 0, 0, '$regime')";
+			$requete="INSERT INTO etudiant (ID_ORIGINE, ID_PROMOTION, CODE_SPECIALITE, CODE_CLASSE, NOM_ETU,
+                            PRENOM_ETU, DNAISSANCE_ETU, DOUBLANT1_ETU, DOUBLANT2_ETU, DIPLOME_ETU, REGIME, LOGIN, PASSWORD) VALUES 
+			($origine, $promotion,'$specialite', '$classe', '$nom', '$prenom', '$dnaissance', 0, 0, 0, '$regime', '$login', '$password')";
 			$connexion->exec($requete);
 		}
 		catch (PDOException $e) 
@@ -110,6 +117,7 @@ else {
 	//-------------------------------
 	// INITIALISATION DES DONNEES
 	//-------------------------------
+
 	$idetu="";
 	$origine="";
 	$promotion="";
@@ -119,6 +127,9 @@ else {
 	$prenom="";
 	$dnaissance="";
 	$regime="";
+        $login="";
+        $email="";
+        $password="";
 }
 //------------------------------------------------------------------------------------------
 // Fonction permettant le traitement des champs du formulaire afin de retirer des erreurs.
@@ -146,6 +157,9 @@ function test_input($data) {
 		//-------------------
 		echo '<title>'."Module étudiants".$title.'</title>';?>
 		<link rel="stylesheet" type="text/css" href="../css/etudiants.css">
+                <link href="../js/jquery-ui-1.11.4.custom/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+                <script src="../js/jquery-ui-1.11.4.custom/jquery-ui.min.js" type="text/javascript"></script>
+                <script src="../js/jquery-ui-1.11.4.custom/datepicker-fr.js" type="text/javascript"></script>
 	</head>
 	<body>	
 		<?php
@@ -174,15 +188,23 @@ function test_input($data) {
 				</div>
 				<div>
 					<label for="nom_etu">Nom</label>
-					<input id="nom_etu" type="text" name="NOM_ETU" value="<?php echo $nom ;?>">
+					<input id="nom_etu" type="text" name="NOM_ETU" value="<?php echo $nom ;?>"/>
 				</div>
 				<div>
 					<label for="prenom_etu">Prénom</label>
-					<input id="prenom_etu" type="text" name="PRENOM_ETU" value="<?php echo $prenom ;?>">
+					<input id="prenom_etu" type="text" name="PRENOM_ETU" value="<?php echo $prenom ;?>"/>
+				</div>
+                            	<div>
+					<label for="login">Login</label>
+					<input id="login" type="text" name="LOGIN" value="<?php echo $login ;?>"/>
+				</div>
+                            	<div>
+					<label for="password">Mot de passe</label>
+                                        <input id="password" type="password" name="PASSWORD" value=""/>
 				</div>
 				<div>
 					<label for="dnaissance_etu">Date de naissance</label>
-					<input id="dnaissance_etu" type="date" name="DNAISSANCE_ETU" value="<?php echo $dnaissance ;?>">
+                                        <input id="dnaissance_etu" type="date" name="DNAISSANCE_ETU" autocomplete="off" value="<?php echo $dnaissance ;?>"/>
 				</div>
 				<div>
 					<label>Classe</label><?php echo lister_classe($connexion,"SIO1"); ?><br/>
@@ -212,5 +234,14 @@ function test_input($data) {
 			//-------------------------------
 			include("../struct/pieddepage.php");
 		?>
+            <script type="text/javascript">
+                $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+                $( "#dnaissance_etu" ).datepicker({
+                    changeYear: true,
+                    changeMonth: true,
+                    yearRange: "1950:2012",
+                    defaultDate: "08/08/1996"
+                });
+            </script>
 	</body>
 </html>

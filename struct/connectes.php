@@ -7,16 +7,15 @@ $nomfic = $tab[$max-1];
 //echo $nomfic;
 
 if ($nomfic != "accueil.php" && $nomfic != "index.php"){
-	include_once( '../connexion/connexion_by_id.php' ); 
+	include_once( '../connexion/connexion.php' ); 
 }
 //echo $_SERVER ['SCRIPT_NAME'];
 //echo $_SERVER ['PHP_SELF'];
-$connexion = getConnexion("etudiant", "azertyuiop");
+$connexion = getConnexion();
 
 // -------
 // Accesseur pour l'adresse IP du client
 function get_client_ip() {
-    $ipaddress = '';
     if (isset($_SERVER['HTTP_CLIENT_IP']))
         $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
     else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))

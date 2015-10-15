@@ -8,12 +8,12 @@ if(!isset($_SESSION['CONNEXION'])){
 
 } else {
 
-	include_once('connexion_by_id.php');
+	include_once('connexion.php');
 
 	$id = $_SESSION['CONNEXION']['ID'];
 	$mdp = $_SESSION['CONNEXION']['MDP'];
 
-	$connexion = getConnexion('etudiant', 'azertyuiop');
+	$connexion = getConnexion();
 	
 }
 

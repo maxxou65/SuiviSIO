@@ -95,6 +95,7 @@ body {
 
 .menu_vertical {
 	background-color: #3F51B5; /* 500 */
+        float: left;
 }
 
 nav #home {

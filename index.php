@@ -45,8 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if ($formValid) {
 
-		include_once("./connexion/connexion_by_id.php");
-		$connexion = getConnexion("etudiant", "azertyuiop");
+		include_once("./connexion/connexion.php");
+		$connexion = getConnexion();
 
 		$req = "SELECT `ID_CONNEXION`, `MDP_CONNEXION` FROM `connexion`;";
 		$res = $connexion->query($req);
@@ -100,8 +100,12 @@ include("struct/enteteAccueil.php");
 		  	<input id="MDP_CONNEXION" type="password" name="MDP_CONNEXION" tabindex="2">
 		  	<span class="hint"><?php echo $mdpErr; ?></span>
 		</div>
-	<input class="submit transition" class="transition" type="submit" value="Connexion" tabindex="3">
-	</form>	
+	<input class="submit transition" type="submit" value="Connexion" tabindex="3">
+	</form>
+        
+        <div>
+            <input class="submit transition" type="submit" value="Inscription">
+        </div>
 	
 	<?php
 		if (isset($message)) {

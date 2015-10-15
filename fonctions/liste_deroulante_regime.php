@@ -23,7 +23,7 @@
 		foreach($tableau as $ligne)
 		{
 			$selected="";
-			if($ligne['REGIME']==$code_regime)
+			if($ligne['REGIME']===$code_regime)
 			{
 				$selected=" selected='selected'";
 			}
