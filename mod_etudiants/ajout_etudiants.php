@@ -235,13 +235,16 @@ function test_input($data) {
 			include("../struct/pieddepage.php");
 		?>
             <script type="text/javascript">
-                $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
-                $( "#dnaissance_etu" ).datepicker({
-                    changeYear: true,
-                    changeMonth: true,
-                    yearRange: "1950:2012",
-                    defaultDate: "08/08/1996"
-                });
+                if (navigator.userAgent.match(/Firefox/i)) {
+                    $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
+                    $( "#dnaissance_etu" ).datepicker({
+                        dateFormat: 'yy-mm-dd',
+                        changeYear: true,
+                        changeMonth: true,
+                        yearRange: "1950:2012",
+                        defaultDate: "1996-08-08"
+                    });
+                }
             </script>
 	</body>
 </html>
