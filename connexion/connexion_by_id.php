@@ -1,4 +1,5 @@
 <?php 
+
  // NE PAS UTILISER CE CODE !! //
 function getConnexion($identifiant, $mdp) {
     $connexion ="";
@@ -22,4 +23,3 @@ function getConnexion($identifiant, $mdp) {
 
 	return $connexion;
 }
-?>

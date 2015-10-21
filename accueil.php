@@ -16,7 +16,8 @@
 /** Inclusion de la session */
 include('connexion/session.php');
 
-if (!($_SESSION['CONNEXION']['ID'] == 'enseignant')) {
+if (!($_SESSION['CONNEXION']['ID'] == 'enseignant' || ($_SESSION['CONNEXION']['ID'] == 'etudiant'))) 
+{
 	header('Location: mod_stages/expl_donnes_entreprise.php');
 	exit;
 }
@@ -36,8 +37,8 @@ if (!($_SESSION['CONNEXION']['ID'] == 'enseignant')) {
 </head>
 <body><!--
 	entête (header)
---><?php include("./struct/enteteAccueil.php");
-?>
+--><?php include("./struct/enteteAccueil.php");?>
+    
 <section id="accueil" class="">
 	<div class="placer">
 	<h2>Bienvenu sur l'application de Suivi des SIO <br><sub>qui que vous soyez</sub></h2>
@@ -48,22 +49,25 @@ if (!($_SESSION['CONNEXION']['ID'] == 'enseignant')) {
 			</a><!--
 		 --><a href="./mod_stages/index_stages.php">
 		 		<span>Module stages</span>
-		 	</a><!--
-		 --><?php
-		 	if($_SESSION['CONNEXION']['ID'] == 'enseignant') {
-		 	?><!--
-		 --><a href="./mod_devenirs/index_devenirs.php">
+		 	</a>
+          
+		 	 <a href="./mod_devenirs/index_devenirs.php">
 		 		<span>Module devenirs</span>
 		 	</a>
-			<?php
-			}
-		 	?>
+            
+              <a href="./index.php">
+            <span>Déconnecter</span>
+            </a>
+            
+		
 	 	</div>
-	</div>
+       
+        
 </section><!-- 
---><?php
+-->
+<?php
 
-/** Inclusion de l'éléménet footer (pied de page) */
+/** Inclusion de l'élément footer (pied de page) */
 	include( 'struct/pieddepageAccueil.php' );
 
 ?>

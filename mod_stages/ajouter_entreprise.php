@@ -41,16 +41,19 @@
 	 * @return string $liste contient les éléments HTML (<datalist>) permettant d'afficher la liste des raisons sociales d'entreprises sur le champ 'raison sociale'
 	 */
 
-	function listNom($connexion){
+	function listNom($connexion)
+    {
 		$sql ="SELECT `NOM_ENTREPRISE` FROM `entreprise`;";
-		try {
+		try 
+        {
 			$res = $connexion->query($sql); 
 			$table = $res->fetchAll(PDO::FETCH_ASSOC);		
 		} catch(PDOException $e){
 			$message = newLineMsg($e->getMessage());
 		}
 		$liste = '<datalist id="raisons_sociales"';
-		foreach ($table as $row) {
+		foreach ($table as $row) 
+        {
 			$liste .= '<option value="'.$row['NOM_ENTREPRISE'].'">';
 		}
 		$liste .= '</datalist>';
@@ -66,16 +69,21 @@
 	 * @return string $type contient les éléments HTML (<datalist>) permettant d'afficher la liste des types  d'entreprises sur le champ 'type'
 	 */
 
-	function listType($connexion){
+	function listType($connexion)
+    {
 		$sql="SELECT `TYPE`,`ID_TYPE_ENTREPRISE` FROM `type_entreprise`;";
-		try {
+		try 
+        {
 			$res = $connexion->query($sql); 
 			$table = $res->fetchAll(PDO::FETCH_ASSOC);		
-		} catch(PDOException $e){
+		} 
+        catch(PDOException $e)
+        {
 			$message = newLineMsg($e->getMessage());
 		}
 		$type = '<select name="TYPE" list="type_entreprise" id="type" class="defaut" tabindex="2" required>';
-		foreach ($table as $row) {
+		foreach ($table as $row) 
+        {
 			$type .= '<option value="'.$row['ID_TYPE_ENTREPRISE'].'">'.$row['TYPE'];
 		}
 		$type .= '</select>';
@@ -91,7 +99,8 @@
 	 * 
 	 * @return mixed Données passer en paramètre formaté
 	 */
-	function test_input($data) {
+	function test_input($data) 
+    {
 		$data = trim($data);
 		$data = stripslashes($data);
 		$data = htmlspecialchars($data);
@@ -123,7 +132,8 @@
 
 
 
-	if ($_SERVER["REQUEST_METHOD"] == "POST") { // Si le formulaire est envoyé
+	if ($_SERVER["REQUEST_METHOD"] == "POST") 
+    { // Si le formulaire est envoyé
 
 		/** @var boolean détermine si le formulaire est correct ou pas */
 		$formulaireCorrect = TRUE;
@@ -147,10 +157,13 @@
 		 * - Requis
 		 * - Pas de condition de validation particulière 
 		 */
-		if (empty($nom)) {
+		if (empty($nom)) 
+        {
 			$nomErr = "Nom obligatoire";
 			$formulaireCorrect = FALSE;
-		} else {
+		} 
+        else 
+        {
 			$nom = test_input($nom);
 		}
 
@@ -161,10 +174,13 @@
 		 * - Requis
 		 * - Pas de condition de validation particulière 
 		 */
-		if (empty($type)) {
+		if (empty($type)) 
+        {
 			$typeErr = "Type d'entreprise obligatoire";
 			$formulaireCorrect = FALSE;
-		} else {
+		} 
+        else 
+        {
 			$type = test_input($type);
 		}
 
@@ -184,11 +200,15 @@
 		 * - Optionnel
 		 * - 5 chiffres maximum
 		 */
-		if (empty($cpost)){
+		if (empty($cpost))
+        {
 			$cpost = "NULL";
-		} else {
+		} 
+        else 
+        {
 			$cpost = test_input($cpost);
-			if(strlen($cpost) < 5) {
+			if(strlen($cpost) < 5) 
+            {
 				$cpostErr = "Seulement 5 chiffres sont acceptés"; 
 				$formulaireCorrect = FALSE;
 			}
@@ -201,10 +221,13 @@
 		 * - Optionnel
 		 * - Pas de condition de validation particulière 
 		 */
-		if (empty($ville)) {
+		if (empty($ville)) 
+        {
 			$villeErr = "Ville obligatoire";
 			$formulaireCorrect = FALSE;
-		} else {
+		} 
+        else 
+        {
 			$ville = test_input($ville);
 		}
 
@@ -213,12 +236,16 @@
 		 * - Requis
 		 * - Vérification de la syntaxe avec un filtre
 		 */
-		if (empty($mail_ent)) {
+		if (empty($mail_ent)) 
+        {
 			$mail_entErr = "E-mail de l'entreprise obligatoire";
 			$formulaireCorrect = FALSE;
-		} else {
+		} 
+        else 
+        {
 			$mail_ent = test_input($mail_ent);
-			if (!filter_var($mail_ent, FILTER_VALIDATE_EMAIL)) {
+			if (!filter_var($mail_ent, FILTER_VALIDATE_EMAIL)) 
+            {
 				$mail_entErr = "Adresse mail invalide"; 
 				$formulaireCorrect = FALSE;
 			}
@@ -236,12 +263,14 @@
 
 
 		// Si le formulaire à été soumis, on inserre les données dans la base, sinon on affiche les erreurs
-		if ($formulaireCorrect == TRUE) {
+		if ($formulaireCorrect == TRUE) 
+        {
 			
 			// Initialisation du message à afficher pour l'utilisateur 
 			$message = "";
 
-			if ($nom_contact!="" OR $prenom_contact!="" OR $tel_contact!="" OR $mail_contact!=""){
+			if ($nom_contact!="" OR $prenom_contact!="" OR $tel_contact!="" OR $mail_contact!="")
+            {
 			/*
 			 * Phase 1
 			 * -------
@@ -252,9 +281,12 @@
 			$sql = "INSERT INTO `contact`(`NOM_CONTACT`, `PRENOM_CONTACT`, `MAIL_CONTACT`, `NUM_TELEPHONE`)
 			VALUES ('$nom_contact', '$prenom_contact', '$mail_contact',  '$tel_contact');";
 
-			try {
+			try 
+            {
 				$connexion->query($sql);  
-			} catch(PDOException $e){
+			} 
+            catch(PDOException $e)
+            {
 				$message .= newLineMsg("Problème pour ajouter le contact, vérifiez vos données.")
 				.  newLineMsg($e->getMessage())
 				.  newLineMsg($sql);
@@ -267,16 +299,21 @@
 			 */
 
 			
-			try {
+			try 
+            {
 				$tab = $connexion->query('SELECT LAST_INSERT_ID() as last_id');
 				$tab1=$tab->fetchALL(PDO::FETCH_ASSOC);
-			}catch(PDOException $e){
+			}
+            catch(PDOException $e)
+            {
 				$message .= newLineMsg("Problème pour recupere le numéro du contact, vérifier vos données.")
 				.  newLineMsg($e->getMessage());
 			}
 			$id_contact = $tab1[0]['last_id'];
 			
-		}else{
+		}
+            else
+            {
 			$id_contact="1";
 		}
 

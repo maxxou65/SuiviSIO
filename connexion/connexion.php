@@ -1,3 +1,4 @@
+
 <?php
 
 function getConnexion() {
@@ -39,4 +40,3 @@ class ConnexionPDO {
         return self::$instance;
     }
 }
-?>

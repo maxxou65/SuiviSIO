@@ -16,7 +16,7 @@
 if(isset($_POST['valid'])){
 	$valid=$_POST['valid'];
 	foreach($valid as $ID_ETU){
-		$get = "SELECT `ID_ORIGINE`, `ID_PROMOTION`, `CODE_SPECIALITE`, `CODE_CLASSE`, `NOM_ETU`, `PRENOM_ETU`, `DNAISSANCE_ETU`, `DOUBLANT1_ETU`, `DOUBLANT2_ETU`, `DIPLOME_ETU`, `REGIME` FROM ETUDIANT_TEMP WHERE ID_ETU=$ID_ETU";
+		$get = "SELECT `ID_ORIGINE`, `ID_PROMOTION`, `CODE_SPECIALITE`, `CODE_CLASSE`, `NOM_ETU`, `PRENOM_ETU`, `DNAISSANCE_ETU`, `DOUBLANT1_ETU`, `DOUBLANT2_ETU`, `DIPLOME_ETU`, `REGIME` FROM ETUDIANT WHERE ID_ETU=$ID_ETU";
         try {
             $infos = $connexion->query($get);  
         }
@@ -44,7 +44,7 @@ if(isset($_POST['valid'])){
         //on execute la requete de suppression de la table temporaire
         if(!isset($message)){
             try {
-                $connexion->exec("DELETE FROM ETUDIANT_TEMP WHERE ID_ETU=$ID_ETU");
+                $connexion->exec("DELETE FROM ETUDIANT WHERE ID_ETU=$ID_ETU");
             }
             catch(PDOException $e){
                 $message = "Problème pour supprimer l'étudiant de la table temporaire".'<br>'.$e->getMessage();
@@ -57,7 +57,7 @@ if(isset($_POST['valid'])){
 //                  Requete pour selectionner les etudiants
 //================================
 
-$select_stage = "SELECT ID_ETU, NOM_ETU, PRENOM_ETU, DNAISSANCE_ETU, BAC_ORIGINE, CLASSE.CODE_CLASSE, CODE_SPECIALITE, REGIME, ANNEE, DOUBLANT1_ETU, DOUBLANT2_ETU FROM ETUDIANT_TEMP INNER JOIN ORIGINE on ETUDIANT_TEMP.ID_ORIGINE=ORIGINE.ID_ORIGINE inner join PROMOTION on ETUDIANT_TEMP.ID_PROMOTION=PROMOTION.ID_PROMOTION inner join CLASSE on ETUDIANT_TEMP.CODE_CLASSE=CLASSE.CODE_CLASSE;";
+$select_stage = "SELECT ID_ETU, NOM_ETU, PRENOM_ETU, DNAISSANCE_ETU, BAC_ORIGINE, CLASSE.CODE_CLASSE, CODE_SPECIALITE, REGIME, ANNEE, DOUBLANT1_ETU, DOUBLANT2_ETU FROM ETUDIANT INNER JOIN ORIGINE on ETUDIANT.ID_ORIGINE=ORIGINE.ID_ORIGINE inner join PROMOTION on ETUDIANT.ID_PROMOTION=PROMOTION.ID_PROMOTION inner join CLASSE on ETUDIANT.CODE_CLASSE=CLASSE.CODE_CLASSE;";
 try {  
 	$res = $connexion->query($select_stage);  
 }

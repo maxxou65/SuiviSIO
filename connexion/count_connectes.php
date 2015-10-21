@@ -1,5 +1,6 @@
 <!--
 	/!\ WIP /!\ Work In Progress /!\ WIP /!\   
+<<<<<<< HEAD
 -->
 
 <?php
@@ -63,10 +64,3 @@ catch(PDOException $e){
 	$message = "Problème pour d'accès".'<br>'.$e->getMessage();
 	echo $message;
 }
-$donnees = $res->fetch(PDO::FETCH_ASSOC);
-
-
-
-// Ouf ! On n'a plus qu'à afficher le nombre de connectés !
-echo '<span class="nb_CONNECTES">'.$donnees['nbre_entrees'].' personne(s) connecté(s) - Ah bon ?!</span>';
-?>
